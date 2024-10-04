@@ -6,10 +6,14 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { commonResponse } from 'src/utils';
+import { LANGUAGE_CODE } from 'src/utils/constants';
 
 @Controller('profile')
 export class ProfileController {
@@ -21,8 +25,26 @@ export class ProfileController {
   }
 
   @Get()
-  async findAll(): Promise<Profile[]> {
-    return await this.profileService.finadAllUsers();
+  async findAll(@Req() req, @Res() res): Promise<Profile[]> {
+    let languagecode = req.headers.languagecode || LANGUAGE_CODE.EN;
+    try {
+      const records = await this.profileService.finadAllUsers();
+      return commonResponse.success(
+        languagecode,
+        res,
+        200,
+        'PROFILE_SUCCESS',
+        records,
+      );
+    } catch (error) {
+      return commonResponse.error(
+        languagecode,
+        res,
+        500,
+        'INTERVAL_SERVER_ERROR',
+        null,
+      );
+    }
   }
 
   @Get('/:id')
