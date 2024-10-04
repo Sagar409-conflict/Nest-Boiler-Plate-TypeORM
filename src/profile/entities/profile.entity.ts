@@ -4,11 +4,14 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Profile {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column()
@@ -19,4 +22,13 @@ export class Profile {
 
   @Column()
   phone: string;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deletedAt: Date;
 }
