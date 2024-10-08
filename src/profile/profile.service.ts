@@ -16,8 +16,28 @@ export class ProfileService {
     return this.profileRepository.save(profile);
   }
 
-  async finadAllUsers(): Promise<Profile[]> {
-    return await this.profileRepository.find();
+  async finadAllUsers(
+    search: string,
+    page: number,
+    limit: number,
+  ): Promise<{ data: Profile[]; count: number }> {
+    //NOTE: Here we will create a query builder:
+    const qb = await this.profileRepository.createQueryBuilder('profile');
+    if (search) {
+      qb.where('profile.bio ILIKE :search', { search: `%${search}%` }).orWhere(
+        'profile.address ILIKE :search',
+        { search: `%${search}%` },
+      );
+    }
+
+    const [data, count] = await qb
+      .select(['profile.id', 'profile.bio', 'profile.address'])
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('profile.id', 'ASC')
+      .getManyAndCount();
+
+    return { data, count };
   }
 
   async findUser(id: number): Promise<Profile> {

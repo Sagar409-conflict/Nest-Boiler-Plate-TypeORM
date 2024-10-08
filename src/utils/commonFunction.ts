@@ -19,3 +19,16 @@ export const matchPassword = async (
 ) => {
   return await bcrypt.compare(plainPassword, hashPassword);
 };
+
+export const metaDataForPaginations = async (
+  page: number,
+  limit: number,
+  count: number,
+) => {
+  return {
+    currentPage: Math.abs(page),
+    currentLimit: Math.abs(limit),
+    totalPages: Math.ceil(count / limit),
+    totalRecords: count,
+  };
+};

@@ -14,6 +14,15 @@ export class Profile {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column({ default: 'guest' })
+  username: string;
+
+  @Column({ default: 24 })
+  age: number;
+
+  @Column({ nullable: true })
+  image: string;
+
   @Column()
   bio: string;
 
